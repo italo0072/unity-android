@@ -11,12 +11,14 @@ public class DineroLogic : MonoBehaviour
     public Button tiendaButton; // Botón de la tienda
     public TMP_Text nivelText; // Texto para mostrar el nivel actual del buff
     public TMP_Text costoText; // Texto para mostrar el costo del siguiente nivel
+    public TMP_Text gananciaPorSegundoText; // Texto para mostrar la ganancia por segundo
 
     private int nivelBuff = 0; // Nivel inicial del buff
     private int maxNivelBuff = 20; // Nivel máximo del buff
-    private float costoBuff = 100f; // Costo inicial del buff
-    private float incrementoCosto = 100f; // Incremento en el costo por nivel
-    private float multiplicadorBuff = 2f; // Multiplicador inicial del buff
+    private float costoBuff = 25f; // Costo inicial del buff
+    private float multiplicadorCosto = 7f; // Factor de multiplicación del costo por nivel
+    private float multiplicadorGanancia = 4.5f; // Multiplicador de ganancia por nivel
+    private float incrementoBuff = 1.5f; // Incremento del buff por nivel
 
     void Start()
     {
@@ -24,6 +26,7 @@ public class DineroLogic : MonoBehaviour
         GameData.LoadMoney();
         UpdateMoneyText();
         ActualizarNivelYCosto(); // Actualiza nivel y costo al iniciar
+        ActualizarGananciaPorSegundo(); // Muestra la ganancia inicial por segundo
 
         // Asignar la función de compra al botón de la tienda
         tiendaButton.onClick.AddListener(ComprarBuff);
@@ -33,7 +36,7 @@ public class DineroLogic : MonoBehaviour
     void Update()
     {
         // Aumentar el dinero pasivo, usando el buff según el nivel
-        float dineroGanado = (dineroPasivoPorSegundo * (nivelBuff > 0 ? multiplicadorBuff : 1)) * Time.deltaTime;
+        float dineroGanado = (dineroPasivoPorSegundo * Mathf.Pow(multiplicadorGanancia, nivelBuff)) * Time.deltaTime;
         GameData.currentMoney += dineroGanado;
 
         // Actualizar el texto de dinero
@@ -62,17 +65,26 @@ public class DineroLogic : MonoBehaviour
         {
             GameData.currentMoney -= costoBuff; // Reducir el dinero del jugador
             nivelBuff++; // Aumentar el nivel del buff
-            multiplicadorBuff = 2f * nivelBuff; // Aumentar el multiplicador del buff (ej: x2, x4, x6...)
-            costoBuff += incrementoCosto; // Incrementar el costo del siguiente nivel
+            costoBuff *= multiplicadorCosto; // Multiplica el costo para el siguiente nivel
+            dineroPasivoPorSegundo *= incrementoBuff; // Incrementa la ganancia por segundo por el buff
 
             ActualizarNivelYCosto(); // Actualizar el texto del nivel y el costo
+            ActualizarGananciaPorSegundo(); // Actualizar la ganancia por segundo
         }
     }
 
     void ActualizarNivelYCosto()
     {
-        nivelText.text = "Nivel de Buff: " + nivelBuff + "/" + maxNivelBuff;
-        costoText.text = "Costo de nivel: " + costoBuff + " monedas";
+        // Mostrar el nivel actual del buff y el costo del siguiente nivel en los textos correspondientes
+        nivelText.text = "Nivel Buff: " + nivelBuff + "/" + maxNivelBuff;
+        costoText.text = "Costo próximo nivel: " + costoBuff + " monedas";
+    }
+
+    void ActualizarGananciaPorSegundo()
+    {
+        // Calcular y mostrar la ganancia por segundo actual
+        float gananciaPorSegundo = dineroPasivoPorSegundo * Mathf.Pow(multiplicadorGanancia, nivelBuff);
+        gananciaPorSegundoText.text =  gananciaPorSegundo + " /sg";
     }
 
     void OnApplicationQuit()

@@ -17,6 +17,19 @@ public class CelularPanel : MonoBehaviour
         panel.transform.localScale = Vector3.zero;
         bgImage = background.GetComponent<Image>();
         background.SetActive(false);
+
+        // Ajuste del panel según el tamaño de la pantalla
+        AdjustPanelSize();
+    }
+
+    void AdjustPanelSize()
+    {
+        RectTransform panelRect = panel.GetComponent<RectTransform>();
+
+        // Ajuste para el 80% de ancho y 70% de alto de la pantalla, manteniendo anclado al centro
+        panelRect.anchorMin = new Vector2(0.1f, 0.15f);
+        panelRect.anchorMax = new Vector2(0.9f, 0.85f);
+        panelRect.offsetMin = panelRect.offsetMax = Vector2.zero;
     }
 
     public void TogglePanel()
