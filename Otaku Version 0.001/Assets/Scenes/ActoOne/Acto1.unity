@@ -8849,23 +8849,6 @@ RectTransform:
   m_AnchorMax: {x: 0.77000004, y: 0.7755075}
   m_AnchoredPosition: {x: 193.43, y: -21}
   m_SizeDelta: {x: -18.867, y: -82.479}
-<<<<<<< HEAD
-=======
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-<<<<<<< HEAD
-  m_AnchorMin: {x: 0.8725002, y: 0.6498309}
-  m_AnchorMax: {x: 0.98375005, y: 0.9407842}
-  m_AnchoredPosition: {x: 2.2724, y: -34}
-  m_SizeDelta: {x: 98.09, y: 20.267}
->>>>>>> ab507a42994547443c9af3a4b9ec3eb09ec9fcea
-=======
-  m_AnchorMin: {x: 0.5775001, y: 0.21000001}
-  m_AnchorMax: {x: 0.77000004, y: 0.7755075}
-  m_AnchoredPosition: {x: 193.43, y: -21}
-  m_SizeDelta: {x: -18.867, y: -82.479}
->>>>>>> parent of ab507a4 (Interfaz de configuracion)
-=======
->>>>>>> e1930eff5c3969255571e42d90143a27df271ad1
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1079527723
 MonoBehaviour:
@@ -16662,13 +16645,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1943476407}
   m_CullTransparentMesh: 1
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> parent of ab507a4 (Interfaz de configuracion)
-=======
->>>>>>> e1930eff5c3969255571e42d90143a27df271ad1
 --- !u!1 &1953000420
 GameObject:
   m_ObjectHideFlags: 0
@@ -16828,29 +16804,13 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1955630428}
-<<<<<<< HEAD
-<<<<<<< HEAD
-  m_LocalRotation: {x: -0.059213072, y: -0, z: -0, w: 0.99824536}
-=======
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
->>>>>>> parent of ab507a4 (Interfaz de configuracion)
-=======
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
->>>>>>> e1930eff5c3969255571e42d90143a27df271ad1
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1079527722}
   m_RootOrder: 0
-<<<<<<< HEAD
-<<<<<<< HEAD
-  m_LocalEulerAnglesHint: {x: -6.789, y: 0, z: 0}
-=======
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
->>>>>>> parent of ab507a4 (Interfaz de configuracion)
-=======
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
->>>>>>> e1930eff5c3969255571e42d90143a27df271ad1
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
@@ -16953,14 +16913,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1955630428}
   m_CullTransparentMesh: 1
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> ab507a42994547443c9af3a4b9ec3eb09ec9fcea
-=======
->>>>>>> parent of ab507a4 (Interfaz de configuracion)
-=======
->>>>>>> e1930eff5c3969255571e42d90143a27df271ad1
 --- !u!1 &1970292014
 GameObject:
   m_ObjectHideFlags: 0
