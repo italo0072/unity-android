@@ -6,44 +6,65 @@ using UnityEngine.UI;
 
 public class DineroLogic : MonoBehaviour
 {
-    public float dineroPasivoPorSegundo = 1f; // Dinero pasivo ganado por segundo
+    public float dineroPasivoBase = 1f; // Dinero pasivo base por segundo
+    private float dineroTotalPorSegundo; // Dinero total ganado por segundo (base + buffs acumulados)
     public TMP_Text moneyText; // Referencia al texto de dinero
-    public Button tiendaButton; // Botón de la tienda
-    public TMP_Text nivelText; // Texto para mostrar el nivel actual del buff
-    public TMP_Text costoText; // Texto para mostrar el costo del siguiente nivel
-    public TMP_Text gananciaPorSegundoText; // Texto para mostrar la ganancia por segundo
+    public TMP_Text gananciaTotalText; // Texto para mostrar la ganancia total acumulada
 
-    private int nivelBuff = 0; // Nivel inicial del buff
-    private int maxNivelBuff = 20; // Nivel máximo del buff
-    private float costoBuff = 25f; // Costo inicial del buff
-    private float multiplicadorCosto = 7f; // Factor de multiplicación del costo por nivel
-    private float multiplicadorGanancia = 4.5f; // Multiplicador de ganancia por nivel
-    private float incrementoBuff = 1.5f; // Incremento del buff por nivel
+    // Configuración de cada buff
+    [System.Serializable]
+    public class Buff
+    {
+        public Button boton; // Botón del buff
+        public TMP_Text nivelText; // Texto para mostrar el nivel actual
+        public TMP_Text costoText; // Texto para mostrar el costo del siguiente nivel
+        public float costoInicial; // Costo inicial del buff
+        public float aumento; // Aumento base por compra
+        public float gananciaPorNivel; // Ganancia acumulada por nivel
+        public int maxNivel; // Nivel máximo del buff
+        public float multiplicadorCosto; // Factor de multiplicación del costo por nivel
+
+        [HideInInspector] public int nivelBuff = 0; // Nivel actual
+        [HideInInspector] public float costoActual; // Costo actual
+        [HideInInspector] public float gananciaTotal = 0; // Ganancia total acumulada
+    }
+
+    public Buff[] buffs; // Array con los buffs configurables
 
     void Start()
     {
         // Cargar el dinero al iniciar
         GameData.LoadMoney();
         UpdateMoneyText();
-        ActualizarNivelYCosto(); // Actualiza nivel y costo al iniciar
-        ActualizarGananciaPorSegundo(); // Muestra la ganancia inicial por segundo
 
-        // Asignar la función de compra al botón de la tienda
-        tiendaButton.onClick.AddListener(ComprarBuff);
-        ActualizarBotonTienda(); // Actualiza el estado del botón de tienda al iniciar
+        // Inicializar cada buff con su configuración y asignar el evento al botón
+        foreach (Buff buff in buffs)
+        {
+            buff.costoActual = buff.costoInicial;
+            ActualizarNivelYCosto(buff); // Actualiza el nivel y costo al iniciar
+            buff.boton.onClick.AddListener(() => ComprarBuff(buff));
+            ActualizarBotonTienda(buff);
+        }
+
+        // Inicializar el dinero total por segundo con el pasivo base
+        dineroTotalPorSegundo = dineroPasivoBase;
+        gananciaTotalText.text = dineroTotalPorSegundo + " /sg"; // Mostrar la ganancia total inicial
     }
 
     void Update()
     {
-        // Aumentar el dinero pasivo, usando el buff según el nivel
-        float dineroGanado = (dineroPasivoPorSegundo * Mathf.Pow(multiplicadorGanancia, nivelBuff)) * Time.deltaTime;
-        GameData.currentMoney += dineroGanado;
-
-        // Actualizar el texto de dinero
+        // Acumular el dinero total por segundo con todos los buffs activos
+        GameData.currentMoney += dineroTotalPorSegundo * Time.deltaTime;
         UpdateMoneyText();
 
-        // Actualizar el botón de tienda según el dinero actual y nivel del buff
-        ActualizarBotonTienda();
+        // Calcular la ganancia total y actualizar el texto correspondiente
+        CalcularGananciaTotal();
+
+        // Actualizar el botón de tienda según el dinero actual y nivel del buff para cada uno
+        foreach (Buff buff in buffs)
+        {
+            ActualizarBotonTienda(buff);
+        }
     }
 
     private void UpdateMoneyText()
@@ -52,39 +73,67 @@ public class DineroLogic : MonoBehaviour
         moneyText.text = Mathf.FloorToInt(GameData.currentMoney).ToString();
     }
 
-    void ActualizarBotonTienda()
+    void ActualizarBotonTienda(Buff buff)
     {
         // Habilitar o deshabilitar el botón dependiendo del dinero y si el buff ha alcanzado su nivel máximo
-        tiendaButton.interactable = GameData.currentMoney >= costoBuff && nivelBuff < maxNivelBuff;
+        buff.boton.interactable = GameData.currentMoney >= buff.costoActual && buff.nivelBuff < buff.maxNivel;
     }
 
-    void ComprarBuff()
+    void ComprarBuff(Buff buff)
     {
         // Si el jugador tiene suficiente dinero y no ha alcanzado el nivel máximo, aplicar el buff
-        if (GameData.currentMoney >= costoBuff && nivelBuff < maxNivelBuff)
+        if (GameData.currentMoney >= buff.costoActual && buff.nivelBuff < buff.maxNivel)
         {
-            GameData.currentMoney -= costoBuff; // Reducir el dinero del jugador
-            nivelBuff++; // Aumentar el nivel del buff
-            costoBuff *= multiplicadorCosto; // Multiplica el costo para el siguiente nivel
-            dineroPasivoPorSegundo *= incrementoBuff; // Incrementa la ganancia por segundo por el buff
+            GameData.currentMoney -= buff.costoActual; // Reducir el dinero del jugador
+            buff.nivelBuff++; // Aumentar el nivel del buff
+            buff.costoActual *= buff.multiplicadorCosto; // Multiplica el costo para el siguiente nivel
 
-            ActualizarNivelYCosto(); // Actualizar el texto del nivel y el costo
-            ActualizarGananciaPorSegundo(); // Actualizar la ganancia por segundo
+            // Actualizar la ganancia total del buff
+            if (buff.nivelBuff == 1) // Si estamos en el nivel 1
+            {
+                buff.gananciaTotal = buff.aumento; // Asigna el aumento base al total
+            }
+            else
+            {
+                // Sumar la ganancia total anterior más el aumento por nivel
+                buff.gananciaTotal += buff.gananciaPorNivel; // Suma la ganancia por nivel
+            }
+
+            // Actualizar el dinero total por segundo
+            dineroTotalPorSegundo = dineroPasivoBase; // Reinicia a la base
+            foreach (Buff b in buffs)
+            {
+                dineroTotalPorSegundo += b.gananciaTotal; // Sumar todas las ganancias
+            }
+
+            // Actualizar el texto del nivel y el costo
+            ActualizarNivelYCosto(buff);
         }
     }
 
-    void ActualizarNivelYCosto()
+    void ActualizarNivelYCosto(Buff buff)
     {
         // Mostrar el nivel actual del buff y el costo del siguiente nivel en los textos correspondientes
-        nivelText.text = "Nivel Buff: " + nivelBuff + "/" + maxNivelBuff;
-        costoText.text = "Costo próximo nivel: " + costoBuff + " monedas";
+        buff.nivelText.text = "Nivel Buff: " + buff.nivelBuff + "/" + buff.maxNivel;
+        buff.costoText.text = "Costo próximo nivel: " + Mathf.FloorToInt(buff.costoActual) + " monedas";
     }
 
-    void ActualizarGananciaPorSegundo()
+    void CalcularGananciaTotal()
     {
-        // Calcular y mostrar la ganancia por segundo actual
-        float gananciaPorSegundo = dineroPasivoPorSegundo * Mathf.Pow(multiplicadorGanancia, nivelBuff);
-        gananciaPorSegundoText.text =  gananciaPorSegundo + " /sg";
+        // Reiniciar la ganancia total a la base
+        float gananciaTotal = dineroPasivoBase;
+
+        // Sumar las ganancias de cada buff
+        foreach (Buff buff in buffs)
+        {
+            gananciaTotal += buff.gananciaTotal; // Añadir la ganancia acumulada
+        }
+
+        // Actualizar el dinero total por segundo
+        dineroTotalPorSegundo = gananciaTotal;
+
+        // Mostrar la ganancia total acumulada en el texto correspondiente
+        gananciaTotalText.text = dineroTotalPorSegundo + " /sg";
     }
 
     void OnApplicationQuit()
