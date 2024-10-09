@@ -6,10 +6,10 @@ using UnityEngine.UI;
 
 public class DineroPulsado : MonoBehaviour
 {
-    public float dineroAdicionalBasePorSegundo = 5f; // Dinero extra base por mantener la pantalla presionada
+    public float dineroAdicionalBasePorSegundo = 5; // Dinero extra base por mantener la pantalla presionada
     public TMP_Text moneyText; // Referencia al texto de dinero
     public Slider staminaSlider; // Referencia al Slider de estamina
-    public float maxStamina = 10f; // Estamina máxima
+    public float maxStamina = 100f; // Estamina máxima
     private float currentStamina = 0f; // Estamina actual
     public float staminaDecayRate = 1f; // Tasa a la que la estamina disminuye cuando no se está presionando
 
