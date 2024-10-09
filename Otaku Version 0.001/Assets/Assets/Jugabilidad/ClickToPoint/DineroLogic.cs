@@ -87,6 +87,8 @@ public class DineroLogic : MonoBehaviour
         gananciaPorSegundoText.text =  gananciaPorSegundo + " /sg";
     }
 
+
+
     void OnApplicationQuit()
     {
         // Guardar el dinero cuando se cierre la aplicación
