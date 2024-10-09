@@ -2,7 +2,8 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CelularPanel : MonoBehaviour{
+public class CelularPanel : MonoBehaviour
+{
     public GameObject panel;
     public GameObject background;
     public float animationDuration = 0.5f;
@@ -12,12 +13,12 @@ public class CelularPanel : MonoBehaviour{
     void Start()
     {
         // Ocultar panel y fondo al inicio
-      panel.SetActive(false);
+        panel.SetActive(false);
         panel.transform.localScale = Vector3.zero;
         bgImage = background.GetComponent<Image>();
         background.SetActive(false);
 
-        // Ajuste del panel segï¿½n el tamaï¿½o de la pantalla
+        // Ajuste del panel según el tamaño de la pantalla
         AdjustPanelSize();
     }
 
@@ -35,14 +36,14 @@ public class CelularPanel : MonoBehaviour{
     {
         bool isPanelActive = panel.activeSelf;
 
-        // Si el panel estï¿½ activo, esconder; de lo contrario, mostrar
+        // Si el panel está activo, esconder; de lo contrario, mostrar
         panel.SetActive(true);
         background.SetActive(true);
 
         Vector3 targetScale = isPanelActive ? Vector3.zero : Vector3.one;
         float targetAlpha = isPanelActive ? 0f : 0.5f;
 
-        // Iniciar ambas animaciones simultï¿½neamente
+        // Iniciar ambas animaciones simultáneamente
         StartCoroutine(ScalePanel(panel, targetScale, animationDuration, isPanelActive));
         StartCoroutine(FadeBackground(targetAlpha, animationDuration));
     }
